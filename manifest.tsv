@@ -1330,7 +1330,7 @@ https://github.com/eclipse/jnosql.git	java	jnosql	1.1.14	cloned
 https://github.com/orientechnologies/orientdb.git	java	orientdb	3.2.53	cloned
 https://github.com/neo4j/neo4j.git	java	neo4j	3.2.0-alpha08	cloned
 https://github.com/apache/hbase.git	java	hbase-data	rel/2.6.5	cloned
-https://github.com/checkstyle/checkstyle.git	java	checkstyle	checkstyle-13.7.0	pending
+https://github.com/checkstyle/checkstyle.git	java	checkstyle	checkstyle-13.7.0	cloned
 https://github.com/pmd/pmd.git	java	pmd	pmd_releases/7.26.0	cloned
 https://github.com/spotbugs/spotbugs.git	java	spotbugs	4.10.2	cloned
 https://github.com/jacoco/jacoco.git	java	jacoco	v0.8.15	cloned
@@ -1358,7 +1358,7 @@ https://github.com/diffplug/spotless.git	java	spotless	maven/3.7.0	cloned
 https://github.com/google/google-java-format.git	java	google-java-format	v1.35.0	cloned
 https://github.com/spring-projects/sts4.git	java	sts4	5.2.0.RELEASE	cloned
 https://github.com/eclipse/eclipse.jdt.ls.git	java	jdt-ls	v1.60.0	cloned
-https://github.com/square/retrofit.git	java	retrofit	3.0.0	pending
+https://github.com/square/retrofit.git	java	retrofit	3.0.0	cloned
 https://github.com/bumptech/glide.git	java	glide	v5.0.7	cloned
 https://github.com/square/picasso.git	java	picasso	2.8	cloned
 https://github.com/greenrobot/EventBus.git	java	eventbus	V3.3.1	cloned
@@ -1395,7 +1395,7 @@ https://github.com/dropwizard/dropwizard.git	java	dropwizard	v5.0.2	cloned
 https://github.com/graphql-java/graphql-java.git	java	graphql-java	v26.0	cloned
 https://github.com/apache/commons-lang.git	java	commons-lang	rel/commons-lang-3.20.0	cloned
 https://github.com/apache/commons-collections.git	java	commons-collections	struts-1.1-RC1	cloned
-https://github.com/apache/commons-io.git	java	commons-io	rel/commons-io-2.22.0	pending
+https://github.com/apache/commons-io.git	java	commons-io	rel/commons-io-2.22.0	cloned
 https://github.com/apache/commons-codec.git	java	commons-codec	rel/commons-codec-1.22.0	cloned
 https://github.com/apache/commons-compress.git	java	commons-compress	rel/commons-compress-1.28.0	cloned
 https://github.com/apache/poi.git	java	poi	POI-3.7	cloned
@@ -1413,7 +1413,7 @@ https://github.com/apache/commons-csv.git	java	commons-csv	rel/commons-csv-1.14.
 https://github.com/apache/commons-net.git	java	commons-net	rel/commons-net-3.13.0	cloned
 https://github.com/eclipse/eclipse-collections.git	java	eclipse-collections	13.0.0	cloned
 https://github.com/vavr-io/vavr.git	java	vavr	v1.0.1	cloned
-https://github.com/amaembo/streamex.git	java	streamex	streamex-0.8.4	pending
+https://github.com/amaembo/streamex.git	java	streamex	streamex-0.8.4	cloned
 https://github.com/WebGoat/WebGoat.git	java	webgoat	v2025.3	cloned
 https://github.com/OWASP-Benchmark/BenchmarkJava.git	java	owasp-benchmark	1.2beta	cloned
 https://github.com/edu-secmachine/javulna.git	java	javulna	1.0	cloned
@@ -1435,7 +1435,7 @@ https://github.com/fastapi/fastapi.git	python	fastapi	0.138.2	cloned
 https://github.com/numpy/numpy.git	python	numpy	v2.5.0	cloned
 https://github.com/pandas-dev/pandas.git	python	pandas	v3.0.4	cloned
 https://github.com/psf/requests.git	python	requests	v2.34.2	cloned
-https://github.com/ansible/ansible.git	python	ansible	v2.21.1	pending
+https://github.com/ansible/ansible.git	python	ansible	v2.21.1	cloned
 https://github.com/apache/airflow.git	python	airflow	helm-chart/1.22.0	cloned
 https://github.com/celery/celery.git	python	celery	v5.6.3	cloned
 https://github.com/redis/redis-py.git	python	redis-py	v8.0.1	cloned
@@ -1454,7 +1454,7 @@ https://github.com/python/cpython.git	python	cpython	v3.15.0b3	cloned
 https://github.com/tornadoweb/tornado.git	python	tornado	v6.5.7	cloned
 https://github.com/encode/starlette.git	python	starlette	1.3.1	cloned
 https://github.com/pydantic/pydantic.git	python	pydantic	v2.13.4	cloned
-https://github.com/boto/boto3.git	python	boto3	0.0.14	pending
+https://github.com/boto/boto3.git	python	boto3	0.0.14	cloned
 https://github.com/google/grpc.git	python	grpc	v1.81.1	cloned
 https://github.com/paramiko/paramiko.git	python	paramiko	v1.18.1	cloned
 https://github.com/pyca/cryptography.git	python	cryptography	49.0.0	cloned
@@ -1481,7 +1481,7 @@ https://github.com/dateutil/dateutil.git	python	dateutil	2.9.0.post0	cloned
 https://github.com/arrow-py/arrow.git	python	arrow	1.4.0	cloned
 https://github.com/tartley/colorama.git	python	colorama	v0.3.4	cloned
 https://github.com/Textualize/textual.git	python	textual	v8.2.7	cloned
-https://github.com/tqdm/tqdm.git	python	tqdm	v4.68.3	pending
+https://github.com/tqdm/tqdm.git	python	tqdm	v4.68.3	cloned
 https://github.com/cookiecutter/cookiecutter-django.git	python	cookiecutter-django	2026.06.27	cloned
 https://github.com/saleor/saleor.git	python	saleor	3.23.12	cloned
 https://github.com/zulip/zulip.git	python	zulip	12.1	cloned
@@ -1614,7 +1614,469 @@ https://github.com/pmndrs/jotai.git	node	jotai	v2.20.1	cloned
 https://github.com/mobxjs/mobx.git	node	mobx	mobx@6.16.1	cloned
 https://github.com/immerjs/immer.git	node	immer	v11.1.8	cloned
 https://github.com/ava-labs/avalanchejs.git	node	avalanchejs	v5.1.0	cloned
-https://github.com/vercel/turbo.git	node	turbo	v2.10.0	pending
+https://github.com/vercel/turbo.git	node	turbo	v2.10.0	cloned
+https://github.com/pnpm/pnpm.git	node	pnpm	v11.9.0	cloned
+https://github.com/tj/commander.js.git	node	commander	v15.0.0	cloned
+https://github.com/yargs/yargs.git	node	yargs	v18.0.0	cloned
+https://github.com/chalk/chalk.git	node	chalk	v5.6.2	cloned
+https://github.com/sindresorhus/execa.git	node	execa	v9.6.1	cloned
+https://github.com/sindresorhus/got.git	node	got	v15.0.7	cloned
+https://github.com/node-fetch/node-fetch.git	node	node-fetch	v3.3.2	cloned
+https://github.com/dotenv-org/dotenv.git	node	dotenv	v1.75.1	cloned
+https://github.com/isaacs/node-glob.git	node	glob	v13.0.6	cloned
+https://github.com/micromatch/micromatch.git	node	micromatch	4.0.8	cloned
+https://github.com/jprichardson/node-fs-extra.git	node	fs-extra	v2.1.2	cloned
+https://github.com/isaacs/rimraf.git	node	rimraf	v6.1.3	cloned
+https://github.com/caolan/async.git	node	async	v2.3.0	cloned
+https://github.com/debug-js/debug.git	node	debug	4.4.3	cloned
+https://github.com/winstonjs/winston.git	node	winston	v3.19.0	cloned
+https://github.com/pinojs/pino.git	node	pino	v10.3.1	cloned
+https://github.com/node-serialport/node-serialport.git	node	serialport	v13.0.0	cloned
+https://github.com/websockets/ws.git	node	ws	8.21.0	cloned
+https://github.com/uuidjs/uuid.git	node	uuid	v14.0.1	cloned
+https://github.com/knex/knex.git	node	knex	3.3.0	cloned
+https://github.com/brianc/node-postgres.git	node	node-postgres	v7.14.0	cloned
+https://github.com/auth0/node-jsonwebtoken.git	node	jsonwebtoken	v9.0.3	cloned
+https://github.com/panva/jose.git	node	jose	v6.2.3	cloned
+https://github.com/jaredhanson/passport.git	node	passport	v0.7.0	cloned
+https://github.com/jaredhanson/passport-jwt.git	node	passport-jwt		no-tag
+https://github.com/kelektiv/node.bcrypt.js.git	node	bcryptjs	v6.0.0	cloned
+https://github.com/dcodeIO/bcrypt.js.git	node	bcrypt-js	v3.0.3	cloned
+https://github.com/crypto-browserify/browserify-sign.git	node	browserify-sign	v4.2.6	cloned
+https://github.com/auth0/node-oauth2-jwt-bearer.git	node	oauth2-jwt-bearer	v1.9.1	cloned
+https://github.com/simov/grant.git	node	grant	v5.4.24	cloned
+https://github.com/mozilla/node-convict.git	node	node-convict	v6.2.5	cloned
+https://github.com/helmetjs/helmet.git	node	helmet	v8.2.0	cloned
+https://github.com/expressjs/cors.git	node	cors	v2.8.6	cloned
+https://github.com/expressjs/session.git	node	express-session	v1.19.0	cloned
+https://github.com/visionmedia/node-querystring.git	node	node-querystring	0.6.6	cloned
+https://github.com/mysticatea/eslint-plugin-security.git	node	eslint-plugin-security		no-tag
+https://github.com/OWASP/NodeGoat.git	node	nodegoat	v1.4	cloned
+https://github.com/juice-shop/juice-shop.git	node	juice-shop	v20.1.1	cloned
+https://github.com/Contrast-Security-OSS/NodeGoat.git	node	contrast-nodegoat	v1.4	cloned
+https://github.com/OWASP/DVNA.git	node	dvna		no-tag
+https://github.com/OWASP/secureflag-os.git	node	secureflag-os		no-tag
+https://github.com/snyk-labs/nodejs-goof.git	node	nodejs-goof	1.0.1	cloned
+https://github.com/rapid7/NodeGoatPro.git	node	nodegoat-pro		no-tag
+https://github.com/cr0hn/vulnerable-node.git	node	vulnerable-node		no-tag
+https://github.com/appsecco/dvna.git	node	dvna-appsecco		no-tag
+https://github.com/webpwnized/mutillidae.git	node	mutillidae	v2.7.11	cloned
+https://github.com/spring-projects/spring-petclinic.git	java	spring-petclinic	1.5.x	cloned
+https://github.com/spring-petclinic/spring-petclinic-microservices.git	java	spring-petclinic-microservices	v3.4.1	cloned
+https://github.com/jhipster/jhipster-sample-app.git	java	jhipster-sample-app	v9.1.0	cloned
+https://github.com/spring-projects/spring-mvc-showcase.git	java	spring-mvc-showcase		no-tag
+https://github.com/spring-projects/spring-data-examples.git	java	spring-data-examples		no-tag
+https://github.com/spring-attic/greenhouse.git	java	greenhouse		no-tag
+https://github.com/spring-projects/spring-boot.git	java	spring-boot	v3.5.16	cloned
+https://github.com/spring-projects/spring-framework.git	java	spring-framework	v7.0.8	cloned
+https://github.com/spring-projects/spring-security.git	java	spring-security	7.1.0	cloned
+https://github.com/spring-projects/spring-authorization-server.git	java	spring-authorization-server	1.5.8	cloned
+https://github.com/spring-projects/spring-batch.git	java	spring-batch	v6.0.4	cloned
+https://github.com/spring-projects/spring-integration.git	java	spring-integration	v6.5.10	cloned
+https://github.com/macrozheng/mall.git	java	mall	v1.0.3	cloned
+https://github.com/apolloconfig/apollo.git	java	apollo	v2.5.1	cloned
+https://github.com/alibaba/nacos.git	java	nacos	3.2.2	cloned
+https://github.com/alibaba/Sentinel.git	java	sentinel	1.8.10	cloned
+https://github.com/apache/shardingsphere.git	java	shardingsphere	5.5.3	cloned
+https://github.com/dromara/Sa-Token.git	java	sa-token	v1.45.0	cloned
+https://github.com/halo-dev/halo.git	java	halo	v2.25.4	cloned
+https://github.com/elunez/eladmin.git	java	eladmin	v2.7	cloned
+https://github.com/jeecgboot/JeecgBoot.git	java	jeecgboot	v3.9.2	cloned
+https://github.com/macrozheng/mall-swarm.git	java	mall-swarm	v1.0.3	cloned
+https://github.com/YunaiV/ruoyi-vue-pro.git	java	ruoyi-vue-pro	v2026.05(jdk17/21)	cloned
+https://github.com/dromara/RuoYi-Vue-Plus.git	java	ruoyi-vue-plus	v5.6.2	cloned
+https://github.com/xkcoding/spring-boot-demo.git	java	spring-boot-demo		no-tag
+https://github.com/hs-web/hsweb-framework.git	java	hsweb-framework	5.0.1	cloned
+https://github.com/doocs/advanced-java.git	java	advanced-java	v2.0	cloned
+https://github.com/guchengwuyue/yshopmall.git	java	yshopmall		no-tag
+https://github.com/cloudfavorites/favorites-web.git	java	favorites-web	favorites-1.3.0	cloned
+https://github.com/lenve/vhr.git	java	vhr		no-tag
+https://github.com/lihengming/spring-boot-api-project-seed.git	java	api-project-seed	V1.3	cloned
+https://github.com/alibaba/java-alibaba.git	java	java-alibaba		no-tag
+https://github.com/java/java-gateway.git	java	java-gateway		no-tag
+https://github.com/java/java-config.git	java	java-config		no-tag
+https://github.com/java/java-netflix.git	java	java-netflix		no-tag
+https://github.com/java/java-openfeign.git	java	java-openfeign		no-tag
+https://github.com/java/java-sleuth.git	java	java-sleuth		no-tag
+https://github.com/pig-mesh/pig.git	java	pig	v4.0.0	cloned
+https://github.com/sqshq/piggymetrics.git	java	piggymetrics	spring.version.2.0.3	cloned
+https://github.com/zhoutaoo/SpringCloud.git	java	springcloud-learning		no-tag
+https://github.com/forezp/SpringCloudLearning.git	java	springcloudlearning		no-tag
+https://github.com/yinjihuan/java.git	java	yinjihuan-cloud		no-tag
+https://github.com/liuweijw/fw-cloud-framework.git	java	fw-cloud-framework	v1.0.5	cloned
+https://github.com/itmuch/java-docker-microservice-book-code.git	java	cloud-docker-book		no-tag
+https://github.com/apache/kafka.git	java	kafka	kafka-0.7.2-incubating-candidate-5	cloned
+https://github.com/elastic/elasticsearch.git	java	elasticsearch	v9.4.2	cloned
+https://github.com/opensearch-project/OpenSearch.git	java	opensearch	3.7.0	cloned
+https://github.com/apache/cassandra.git	java	cassandra	cassandra-6.0-alpha1	cloned
+https://github.com/jenkinsci/jenkins.git	java	jenkins	jenkins-2.570	cloned
+https://github.com/apache/druid.git	java	druid	druid-37.0.0	cloned
+https://github.com/apache/pulsar.git	java	pulsar	v4.2.2	cloned
+https://github.com/apache/flink.git	java	flink	v0.4-rc1	cloned
+https://github.com/trinodb/trino.git	java	trino	482	cloned
+https://github.com/keycloak/keycloak.git	java	keycloak	26.6.4	cloned
+https://github.com/apache/hadoop.git	java	hadoop	submarine-0.2.0-RC0	cloned
+https://github.com/apache/spark.git	java	spark	v4.2.0-rc4	cloned
+https://github.com/apache/hbase.git	java	hbase	rel/2.6.5	cloned
+https://github.com/apache/hive.git	java	hive	storage-release-2.8.1-rc2	cloned
+https://github.com/apache/zookeeper.git	java	zookeeper	release-3.9.5-0	cloned
+https://github.com/apache/tomcat.git	java	tomcat	11.0.23	cloned
+https://github.com/eclipse-vertx/vert.x.git	java	vertx	_old/v2.0.0-final	cloned
+https://github.com/netty/netty.git	java	netty	netty-4.2.15.Final	cloned
+https://github.com/google/guava.git	java	guava	v33.6.0	cloned
+https://github.com/ReactiveX/RxJava.git	java	rxjava	v4.0.0-alpha-17	cloned
+https://github.com/apache/dubbo.git	java	dubbo	dubbo-3.3.6	cloned
+https://github.com/grpc/grpc-java.git	java	grpc-java	v1.82.1	cloned
+https://github.com/square/okhttp.git	java	okhttp	parent-5.4.0	cloned
+https://github.com/apache/beam.git	java	beam	v2.74.0	cloned
+https://github.com/prestodb/presto.git	java	presto	0.298.1	cloned
+https://github.com/apache/rocketmq.git	java	rocketmq	rocketmq-all-5.5.0	cloned
+https://github.com/wildfly/wildfly.git	java	wildfly	40.0.1.Final	cloned
+https://github.com/eclipse/jetty.project.git	java	jetty	jetty-12.1.10	cloned
+https://github.com/OpenAPITools/openapi-generator.git	java	openapi-generator	v7.23.0	cloned
+https://github.com/apache/solr.git	java	solr	releases/solr/10.0.0	cloned
+https://github.com/apache/nifi.git	java	nifi	rel/nifi-2.10.0	cloned
+https://github.com/apache/camel.git	java	camel	camel-4.21.0	cloned
+https://github.com/hazelcast/hazelcast.git	java	hazelcast	v5.7.0	cloned
+https://github.com/ignite-grid/ignite.git	java	ignite		no-tag
+https://github.com/apache/ignite.git	java	apache-ignite	release-1.0.0-RC3	cloned
+https://github.com/eclipse/che.git	java	che	7.119.0	cloned
+https://github.com/redisson/redisson.git	java	redisson	redisson-4.6.1	cloned
+https://github.com/lettuce-io/lettuce-core.git	java	lettuce	7.6.0.RELEASE	cloned
+https://github.com/ben-manes/caffeine.git	java	caffeine	v3.2.4	cloned
+https://github.com/resilience4j/resilience4j.git	java	resilience4j	v2.4.0	cloned
+https://github.com/Netflix/Hystrix.git	java	hystrix	v1.5.18	cloned
+https://github.com/Netflix/eureka.git	java	eureka	v2.0.6	cloned
+https://github.com/Netflix/ribbon.git	java	ribbon	v2.4.8	cloned
+https://github.com/OpenFeign/feign.git	java	feign	13.13	cloned
+https://github.com/eclipse/microprofile.git	java	microprofile	7.1	cloned
+https://github.com/quarkusio/quarkus.git	java	quarkus	3.37.0	cloned
+https://github.com/micronaut-projects/micronaut-core.git	java	micronaut	v5.1.3	cloned
+https://github.com/helidon-io/helidon.git	java	helidon	4.5.0	cloned
+https://github.com/undertow-io/undertow.git	java	undertow	2.4.1.Final	cloned
+https://github.com/asynchttpclient/async-http-client.git	java	async-http-client	async-http-client-project-3.0.11	cloned
+https://github.com/apache/activemq.git	java	activemq	activemq-6.2.7	cloned
+https://github.com/apache/activemq-artemis.git	java	activemq-artemis	2.55.0	cloned
+https://github.com/zeromq/jeromq.git	java	jeromq	v0.6.0	cloned
+https://github.com/google/tink.git	java	tink	v1.7.0	cloned
+https://github.com/conscrypt/conscrypt.git	java	conscrypt		no-tag
+https://github.com/Netflix/zuul.git	java	zuul	v3.6.18	cloned
+https://github.com/micrometer-metrics/micrometer.git	java	micrometer	v1.17.0	cloned
+https://github.com/open-telemetry/opentelemetry-java.git	java	opentelemetry-java	v1.63.0	cloned
+https://github.com/openzipkin/zipkin.git	java	zipkin	3.6.1	cloned
+https://github.com/open-telemetry/opentelemetry-java-instrumentation.git	java	otel-java-instrumentation	v2.29.0	cloned
+https://github.com/apache/skywalking.git	java	skywalking	v10.4.0	cloned
+https://github.com/pinpoint-apm/pinpoint.git	java	pinpoint	v3.1.0	cloned
+https://github.com/mybatis/mybatis-3.git	java	mybatis	mybatis-3.5.19	cloned
+https://github.com/baomidou/mybatis-plus.git	java	mybatis-plus	v3.5.16	cloned
+https://github.com/hibernate/hibernate-orm.git	java	hibernate	5.3.39	cloned
+https://github.com/jOOQ/jOOQ.git	java	jooq	version-3.21.6	cloned
+https://github.com/openjpa/openjpa.git	java	openjpa		no-tag
+https://github.com/liquibase/liquibase.git	java	liquibase	v5.0.3	cloned
+https://github.com/flyway/flyway.git	java	flyway	flyway-12.9.0	cloned
+https://github.com/FasterXML/jackson-databind.git	java	jackson-databind	jackson-databind-3.2.0	cloned
+https://github.com/FasterXML/jackson-core.git	java	jackson-core	jackson-core-3.2.0	cloned
+https://github.com/FasterXML/jackson-modules-java8.git	java	jackson-modules-java8	jackson-modules-java8-3.0.0-rc2	cloned
+https://github.com/google/gson.git	java	gson	gson-parent-2.14.0	cloned
+https://github.com/apache/avro.git	java	avro	release-1.12.0	cloned
+https://github.com/apache/parquet-mr.git	java	parquet	apache-parquet-1.17.1	cloned
+https://github.com/protocolbuffers/protobuf.git	java	protobuf	v35.1	cloned
+https://github.com/apache/lucene.git	java	lucene	releases/lucene/10.5.0	cloned
+https://github.com/h2database/h2database.git	java	h2database	version-2.4.240	cloned
+https://github.com/pgjdbc/pgjdbc.git	java	pgjdbc	REL42.7.12	cloned
+https://github.com/mysql/mysql-connector-j.git	java	mysql-connector	9.7.0	cloned
+https://github.com/brettwooldridge/HikariCP.git	java	hikaricp	HikariCP-7.1.0	cloned
+https://github.com/apache/calcite.git	java	calcite	v1.23.0-rc1	cloned
+https://github.com/questdb/questdb.git	java	questdb	9.4.3	cloned
+https://github.com/eclipse/jnosql.git	java	jnosql	1.1.14	cloned
+https://github.com/orientechnologies/orientdb.git	java	orientdb	3.2.53	cloned
+https://github.com/neo4j/neo4j.git	java	neo4j	3.2.0-alpha08	cloned
+https://github.com/apache/hbase.git	java	hbase-data	rel/2.6.5	cloned
+https://github.com/checkstyle/checkstyle.git	java	checkstyle	checkstyle-13.7.0	cloned
+https://github.com/pmd/pmd.git	java	pmd	pmd_releases/7.26.0	cloned
+https://github.com/spotbugs/spotbugs.git	java	spotbugs	4.10.2	cloned
+https://github.com/jacoco/jacoco.git	java	jacoco	v0.8.15	cloned
+https://github.com/junit-team/junit5.git	java	junit5	r6.1.1	cloned
+https://github.com/mockito/mockito.git	java	mockito	v5.23.0	cloned
+https://github.com/assertj/assertj-core.git	java	assertj	assertj-build-3.27.7	cloned
+https://github.com/testcontainers/testcontainers-java.git	java	testcontainers	2.0.5	cloned
+https://github.com/google/error-prone.git	java	error-prone	v2.50.0	cloned
+https://github.com/typetools/checker-framework.git	java	checker-framework	checker-framework-4.2.0	cloned
+https://github.com/javaparser/javaparser.git	java	javaparser	javaparser-parent-3.28.2	cloned
+https://github.com/jboss-javassist/javassist.git	java	javassist	rel_3_32_0_ga	cloned
+https://github.com/cglib/cglib.git	java	cglib	RELEASE_3_3_0	cloned
+https://github.com/raphw/byte-buddy.git	java	byte-buddy	byte-buddy-1.18.10	cloned
+https://github.com/robolectric/robolectric.git	java	robolectric	robolectric-4.16.1	cloned
+https://github.com/apache/maven.git	java	maven	maven-3.9.16	cloned
+https://github.com/gradle/gradle.git	java	gradle	v9.6.1	cloned
+https://github.com/google/auto.git	java	google-auto	auto-value-1.11.1	cloned
+https://github.com/square/javapoet.git	java	javapoet	javawriter-2.5.1	cloned
+https://github.com/rzwitserloot/lombok.git	java	lombok	v1.18.46	cloned
+https://github.com/mapstruct/mapstruct.git	java	mapstruct	1.6.3	cloned
+https://github.com/immutables/immutables.git	java	immutables	2.12.2	cloned
+https://github.com/pitest/pitest.git	java	pitest		no-tag
+https://github.com/archunit/archunit.git	java	archunit		no-tag
+https://github.com/diffplug/spotless.git	java	spotless	maven/3.7.0	cloned
+https://github.com/google/google-java-format.git	java	google-java-format	v1.35.0	cloned
+https://github.com/spring-projects/sts4.git	java	sts4	5.2.0.RELEASE	cloned
+https://github.com/eclipse/eclipse.jdt.ls.git	java	jdt-ls	v1.60.0	cloned
+https://github.com/square/retrofit.git	java	retrofit	3.0.0	cloned
+https://github.com/bumptech/glide.git	java	glide	v5.0.7	cloned
+https://github.com/square/picasso.git	java	picasso	2.8	cloned
+https://github.com/greenrobot/EventBus.git	java	eventbus	V3.3.1	cloned
+https://github.com/greenrobot/greenDAO.git	java	greendao	V3.3.0	cloned
+https://github.com/JakeWharton/butterknife.git	java	butterknife	butterknife-parent-7.0.1	cloned
+https://github.com/ReactiveX/RxAndroid.git	java	rxandroid	3.0.2	cloned
+https://github.com/facebook/fresco.git	java	fresco	v3.7.0	cloned
+https://github.com/airbnb/lottie-android.git	java	lottie	v6.7.1	cloned
+https://github.com/dagger/dagger.git	java	dagger	v0.21.7	cloned
+https://github.com/Tencent/tinker.git	java	tinker	v1.9.15.2	cloned
+https://github.com/alibaba/ARouter.git	java	arouter	1.5.1	cloned
+https://github.com/nostra13/Android-Universal-Image-Loader.git	java	uil	v1.9.5	cloned
+https://github.com/CymChad/BaseRecyclerViewAdapterHelper.git	java	brvah	4.4.1	cloned
+https://github.com/zhihu/Matisse.git	java	matisse	v0.5.3-beta3	cloned
+https://github.com/square/leakcanary.git	java	leakcanary	v3.0-alpha-9	cloned
+https://github.com/JakeWharton/timber.git	java	timber	5.0.1	cloned
+https://github.com/permissions-dispatcher/PermissionsDispatcher.git	java	permissions-dispatcher	4.8.0	cloned
+https://github.com/auth0/java-jwt.git	java	java-jwt	4.5.2	cloned
+https://github.com/jwtk/jjwt.git	java	jjwt	0.13.0	cloned
+https://github.com/pac4j/pac4j.git	java	pac4j	scribe-up-1.3.1	cloned
+https://github.com/bouncycastle/bc-java.git	java	bc-java		no-tag
+https://github.com/nimbusds/nimbus-jose-jwt.git	java	nimbus-jose-jwt		no-tag
+https://github.com/google/tink.git	java	tink-security	v1.7.0	cloned
+https://github.com/shiroproject/shiro.git	java	shiro		no-tag
+https://github.com/apereo/cas.git	java	cas	v7.3.7.1	pending
+https://github.com/mitreid-connect/OpenID-Connect-Java-Spring-Server.git	java	openid-connect	mitreid-connect-1.3.4	cloned
+https://github.com/spring-attic/spring-security-oauth.git	java	spring-security-oauth	jwt1.1.1.RELEASE	cloned
+https://github.com/zalando/problem.git	java	zalando-problem	1.0.0	cloned
+https://github.com/OWASP/java-html-sanitizer.git	java	java-html-sanitizer	release-20260313.1	cloned
+https://github.com/spotbugs/spotbugs.git	java	spotbugs-security	4.10.2	cloned
+https://github.com/zaproxy/zaproxy.git	java	zaproxy	v2.17.0	cloned
+https://github.com/google/guice.git	java	guice	7.0.0	cloned
+https://github.com/dropwizard/dropwizard.git	java	dropwizard	v5.0.2	cloned
+https://github.com/graphql-java/graphql-java.git	java	graphql-java	v26.0	cloned
+https://github.com/apache/commons-lang.git	java	commons-lang	rel/commons-lang-3.20.0	cloned
+https://github.com/apache/commons-collections.git	java	commons-collections	struts-1.1-RC1	cloned
+https://github.com/apache/commons-io.git	java	commons-io	rel/commons-io-2.22.0	cloned
+https://github.com/apache/commons-codec.git	java	commons-codec	rel/commons-codec-1.22.0	cloned
+https://github.com/apache/commons-compress.git	java	commons-compress	rel/commons-compress-1.28.0	cloned
+https://github.com/apache/poi.git	java	poi	POI-3.7	cloned
+https://github.com/apache/pdfbox.git	java	pdfbox	3.0.7	pending
+https://github.com/apache/tika.git	java	tika	tika-1.3	cloned
+https://github.com/jhy/jsoup.git	java	jsoup	jsoup-1.22.2	cloned
+https://github.com/skylot/jadx.git	java	jadx	v1.5.5	cloned
+https://github.com/google/jimfs.git	java	jimfs	v1.3.1	cloned
+https://github.com/openstreetmap/osmosis.git	java	osmosis	0.49.2	cloned
+https://github.com/burningwave/core.git	java	burningwave	core-12.66.2	cloned
+https://github.com/lionsoul2014/ip2region.git	java	ip2region	v3.16.0	cloned
+https://github.com/apache/commons-math.git	java	commons-math	rel/commons-math-4.0-beta1	cloned
+https://github.com/apache/commons-text.git	java	commons-text	rel/commons-text-1.15.0	cloned
+https://github.com/apache/commons-csv.git	java	commons-csv	rel/commons-csv-1.14.1	cloned
+https://github.com/apache/commons-net.git	java	commons-net	rel/commons-net-3.13.0	cloned
+https://github.com/eclipse/eclipse-collections.git	java	eclipse-collections	13.0.0	cloned
+https://github.com/vavr-io/vavr.git	java	vavr	v1.0.1	cloned
+https://github.com/amaembo/streamex.git	java	streamex	streamex-0.8.4	cloned
+https://github.com/WebGoat/WebGoat.git	java	webgoat	v2025.3	cloned
+https://github.com/OWASP-Benchmark/BenchmarkJava.git	java	owasp-benchmark	1.2beta	cloned
+https://github.com/edu-secmachine/javulna.git	java	javulna	1.0	cloned
+https://github.com/JoyChou93/java-sec-code.git	java	java-sec-code	v2.0.0	cloned
+https://github.com/appsecco/dvja.git	java	dvja		no-tag
+https://github.com/CSPF-Founder/JavaVulnerableLab.git	java	javavulnerablelab	V0.1	cloned
+https://github.com/DataDog/vulnerable-java-application.git	java	vulnado		no-tag
+https://github.com/Checkmarx/Goatlin.git	java	goatlin	v0.3.0	cloned
+https://github.com/OWASP/SecurityShepherd.git	java	security-shepherd	v3.1	cloned
+https://github.com/righettod/poc-xxe.git	java	poc-xxe		no-tag
+https://github.com/righettod/poc-graphql.git	java	poc-graphql	1.0.0	cloned
+https://github.com/snoopysecurity/Vulnerable-Code-Snippets.git	java	vuln-snippets		no-tag
+https://github.com/frohoff/ysoserial.git	java	ysoserial	v0.0.6	cloned
+https://github.com/GrrrDog/Java-Deserialization-Cheat-Sheet.git	java	java-deser-cheatsheet		no-tag
+https://github.com/jaiswalakshansh/Damn-Vulnerable-GraphQL-Application.git	java	dvga-java		no-tag
+https://github.com/django/django.git	python	django	stable/5.1.x	cloned
+https://github.com/pallets/flask.git	python	flask	3.1.3	cloned
+https://github.com/fastapi/fastapi.git	python	fastapi	0.138.2	cloned
+https://github.com/numpy/numpy.git	python	numpy	v2.5.0	cloned
+https://github.com/pandas-dev/pandas.git	python	pandas	v3.0.4	cloned
+https://github.com/psf/requests.git	python	requests	v2.34.2	cloned
+https://github.com/ansible/ansible.git	python	ansible	v2.21.1	cloned
+https://github.com/apache/airflow.git	python	airflow	helm-chart/1.22.0	cloned
+https://github.com/celery/celery.git	python	celery	v5.6.3	cloned
+https://github.com/redis/redis-py.git	python	redis-py	v8.0.1	cloned
+https://github.com/pytest-dev/pytest.git	python	pytest	9.1.1	cloned
+https://github.com/sqlalchemy/sqlalchemy.git	python	sqlalchemy	rel_2_0_51	cloned
+https://github.com/aio-libs/aiohttp.git	python	aiohttp	v3.14.1	cloned
+https://github.com/huggingface/transformers.git	python	transformers	v5.12.1	cloned
+https://github.com/scikit-learn/scikit-learn.git	python	scikit-learn	1.9.0	cloned
+https://github.com/scipy/scipy.git	python	scipy	v1.18.0	cloned
+https://github.com/matplotlib/matplotlib.git	python	matplotlib	v3.11.0	cloned
+https://github.com/encode/uvicorn.git	python	uvicorn	0.49.0	cloned
+https://github.com/python-poetry/poetry.git	python	poetry	2.4.1	cloned
+https://github.com/pypa/pip.git	python	pip	26.1.2	cloned
+https://github.com/astral-sh/ruff.git	python	ruff	0.15.20	cloned
+https://github.com/python/cpython.git	python	cpython	v3.15.0b3	cloned
+https://github.com/tornadoweb/tornado.git	python	tornado	v6.5.7	cloned
+https://github.com/encode/starlette.git	python	starlette	1.3.1	cloned
+https://github.com/pydantic/pydantic.git	python	pydantic	v2.13.4	cloned
+https://github.com/boto/boto3.git	python	boto3	0.0.14	cloned
+https://github.com/google/grpc.git	python	grpc	v1.81.1	cloned
+https://github.com/paramiko/paramiko.git	python	paramiko	v1.18.1	cloned
+https://github.com/pyca/cryptography.git	python	cryptography	49.0.0	cloned
+https://github.com/streamlit/streamlit.git	python	streamlit	1.58.0	cloned
+https://github.com/scrapy/scrapy.git	python	scrapy	2.16.0	cloned
+https://github.com/Textualize/rich.git	python	rich	v15.0.0	cloned
+https://github.com/getsentry/sentry.git	python	sentry	26.6.0	cloned
+https://github.com/apache/superset.git	python	superset	6.1.0	cloned
+https://github.com/frappe/frappe.git	python	frappe	v15.113.2	cloned
+https://github.com/falconry/falcon.git	python	falcon	4.3.1	cloned
+https://github.com/Pylons/pyramid.git	python	pyramid	2.1rc4	cloned
+https://github.com/bottlepy/bottle.git	python	bottle	0.13.4	cloned
+https://github.com/yaml/pyyaml.git	python	pyyaml	6.0.3	cloned
+https://github.com/python-pillow/Pillow.git	python	pillow	12.2.0	cloned
+https://github.com/pallets/click.git	python	click	8.4.2	cloned
+https://github.com/python/mypy.git	python	mypy	v2.1.0	cloned
+https://github.com/pylint-dev/pylint.git	python	pylint	v4.0.6	cloned
+https://github.com/python-lsp/python-lsp-server.git	python	python-lsp-server	v1.14.0	cloned
+https://github.com/encode/httpx.git	python	httpx	0.28.1	cloned
+https://github.com/tiangolo/sqlmodel.git	python	sqlmodel	0.0.39	cloned
+https://github.com/benoitc/gunicorn.git	python	gunicorn	26.0.0	cloned
+https://github.com/joke2k/faker.git	python	faker	v40.23.0	cloned
+https://github.com/dateutil/dateutil.git	python	dateutil	2.9.0.post0	cloned
+https://github.com/arrow-py/arrow.git	python	arrow	1.4.0	cloned
+https://github.com/tartley/colorama.git	python	colorama	v0.3.4	cloned
+https://github.com/Textualize/textual.git	python	textual	v8.2.7	cloned
+https://github.com/tqdm/tqdm.git	python	tqdm	v4.68.3	cloned
+https://github.com/cookiecutter/cookiecutter-django.git	python	cookiecutter-django	2026.06.27	cloned
+https://github.com/saleor/saleor.git	python	saleor	3.23.12	cloned
+https://github.com/zulip/zulip.git	python	zulip	12.1	cloned
+https://github.com/readthedocs/readthedocs.org.git	python	readthedocs	2026.06.23	cloned
+https://github.com/django-cms/django-cms.git	python	django-cms	5.0.8	cloned
+https://github.com/mage-ai/mage-ai.git	python	mage-ai	0.9.79	cloned
+https://github.com/posthog/posthog.git	python	posthog	posthog-cli/v0.7.33	cloned
+https://github.com/netbox-community/netbox.git	python	netbox	v4.6.3	cloned
+https://github.com/healthchecks/healthchecks.git	python	healthchecks	v4.2	cloned
+https://github.com/mayan-edms/Mayan-EDMS.git	python	mayan-edms	v1.0	cloned
+https://github.com/wagtail/wagtail.git	python	wagtail	v7.4.2	cloned
+https://github.com/encode/django-rest-framework.git	python	django-rest-framework	3.17.1	failed
+https://github.com/jazzband/django-oauth-toolkit.git	python	django-oauth-toolkit	3.2.0	cloned
+https://github.com/jazzband/django-rest-knox.git	python	django-rest-knox	5.0.4	cloned
+https://github.com/pennersr/django-allauth.git	python	django-allauth	65.18.0	cloned
+https://github.com/django-guardian/django-guardian.git	python	django-guardian	3.3.2	cloned
+https://github.com/joke2k/django-environ.git	python	django-environ	v0.14.0	cloned
+https://github.com/un33k/python-slugify.git	python	python-slugify	v8.0.4	pending
+https://github.com/jazzband/django-debug-toolbar.git	python	django-debug-toolbar	7.0.0	cloned
+https://github.com/jazzband/django-silk.git	python	django-silk	5.5.0	cloned
+https://github.com/pytorch/pytorch.git	python	pytorch	v2.12.1	cloned
+https://github.com/tensorflow/tensorflow.git	python	tensorflow	v2.21.0	cloned
+https://github.com/dmlc/xgboost.git	python	xgboost	v3.3.0	cloned
+https://github.com/microsoft/LightGBM.git	python	lightgbm	v4.6.0	cloned
+https://github.com/mlflow/mlflow.git	python	mlflow	v3.14.0	cloned
+https://github.com/ray-project/ray.git	python	ray	ray-2.56.0	cloned
+https://github.com/dask/dask.git	python	dask	2026.6.0	cloned
+https://github.com/jupyter/notebook.git	python	jupyter-notebook	v7.6.0	cloned
+https://github.com/pola-rs/polars.git	python	polars	py-1.42.0	cloned
+https://github.com/duckdb/duckdb.git	python	duckdb	v1.5.4	cloned
+https://github.com/sympy/sympy.git	python	sympy	1.14.0	cloned
+https://github.com/networkx/networkx.git	python	networkx	networkx-3.6.1	cloned
+https://github.com/plotly/plotly.py.git	python	plotly	v6.8.0	cloned
+https://github.com/altair-viz/altair.git	python	altair	v6.2.2	cloned
+https://github.com/bokeh/bokeh.git	python	bokeh	branch-3.2-final-commit	cloned
+https://github.com/apache/arrow.git	python	arrow-python	apache-arrow-24.0.0	cloned
+https://github.com/ibis-project/ibis.git	python	ibis	12.0.0	cloned
+https://github.com/psf/black.git	python	black	26.5.1	cloned
+https://github.com/PyCQA/bandit.git	python	bandit	1.9.4	cloned
+https://github.com/PyCQA/flake8.git	python	flake8	7.3.0	cloned
+https://github.com/python/typeshed.git	python	typeshed		no-tag
+https://github.com/davidhalter/jedi.git	python	jedi	v0.20.0	cloned
+https://github.com/pyupio/safety.git	python	safety	3.8.1	cloned
+https://github.com/trailofbits/pip-audit.git	python	pip-audit	v2.10.1	cloned
+https://github.com/semgrep/semgrep.git	python	semgrep	v1.168.0	cloned
+https://github.com/pypa/setuptools.git	python	setuptools	v82.0.1	cloned
+https://github.com/pypa/hatch.git	python	hatch	hatch-v1.17.0	cloned
+https://github.com/pre-commit/pre-commit.git	python	pre-commit	v4.6.0	cloned
+https://github.com/PyCQA/isort.git	python	isort	8.0.1	cloned
+https://github.com/asottile/pyupgrade.git	python	pyupgrade	v3.21.2	cloned
+https://github.com/PyCQA/autoflake.git	python	autoflake	v2.3.3	cloned
+https://github.com/psutil/psutil.git	python	psutil		no-tag
+https://github.com/giampaolo/pyftpdlib.git	python	pyftpdlib	release-2.2.0	cloned
+https://github.com/Delgan/loguru.git	python	loguru	0.7.3	cloned
+https://github.com/willmcgugan/rich.git	python	rich-tools	v15.0.0	cloned
+https://github.com/pyca/cryptography.git	python	cryptography-sec	49.0.0	cloned
+https://github.com/pyca/pyopenssl.git	python	pyopenssl	v0.14a1	cloned
+https://github.com/pyca/bcrypt.git	python	bcrypt	v1.1.1	cloned
+https://github.com/pyca/pynacl.git	python	pynacl	v0.3.0	cloned
+https://github.com/jpadilla/pyjwt.git	python	pyjwt	2.13.0	cloned
+https://github.com/oauthlib/oauthlib.git	python	oauthlib	v3.3.1	cloned
+https://github.com/requests/requests-oauthlib.git	python	requests-oauthlib	v2.0.0	cloned
+https://github.com/mpdavis/python-jose.git	python	python-jose	3.5.0	cloned
+https://github.com/mozilla/bleach.git	python	bleach	v6.4.0	cloned
+https://github.com/scrapy/scrapy.git	python	scrapy-sec	2.16.0	cloned
+https://github.com/fportantier/vulpy.git	python	vulpy		no-tag
+https://github.com/adeyosemanputera/pygoat.git	python	pygoat		no-tag
+https://github.com/Contrast-Security-OSS/vulnpy.git	python	vulnpy		no-tag
+https://github.com/erev0s/VAmPI.git	python	vampi		no-tag
+https://github.com/Checkmarx/Vulnerable-Web-Application.git	python	checkmarx-vuln-web		no-tag
+https://github.com/stamparm/DVWA-Python.git	python	dvwa-python		no-tag
+https://github.com/righettod/poc-zip-slip.git	python	poc-zip-slip		no-tag
+https://github.com/we45/Vulnerable-Flask-App.git	python	vulnerable-flask		no-tag
+https://github.com/Securecodebox/django-DefectDojo.git	python	defectdojo	v1.8.0	cloned
+https://github.com/DefectDojo/django-DefectDojo.git	python	defectdojo-main	3.0.200	cloned
+https://github.com/nodejs/node.git	node	node	v26.4.0	cloned
+https://github.com/expressjs/express.git	node	express	v5.2.1	cloned
+https://github.com/nestjs/nest.git	node	nest	v11.1.27	cloned
+https://github.com/facebook/react.git	node	react	v19.2.7	cloned
+https://github.com/vuejs/vue.git	node	vue	v2.7.16	cloned
+https://github.com/vuejs/core.git	node	vue-core	v3.5.39	cloned
+https://github.com/angular/angular.git	node	angular	v22.0.4	cloned
+https://github.com/webpack/webpack.git	node	webpack	v5.108.2	cloned
+https://github.com/vitejs/vite.git	node	vite	v8.1.0	cloned
+https://github.com/eslint/eslint.git	node	eslint	v10.6.0	cloned
+https://github.com/prettier/prettier.git	node	prettier	3.9.3	cloned
+https://github.com/lodash/lodash.git	node	lodash	4.18.1	cloned
+https://github.com/axios/axios.git	node	axios	v1.18.1	cloned
+https://github.com/socketio/socket.io.git	node	socketio	socket.io@4.8.3	cloned
+https://github.com/typescript-eslint/typescript-eslint.git	node	typescript-eslint	v8.62.1	cloned
+https://github.com/mochajs/mocha.git	node	mocha	v11.7.7	cloned
+https://github.com/jestjs/jest.git	node	jest	v30.4.2	cloned
+https://github.com/vercel/next.js.git	node	nextjs	v16.2.9	cloned
+https://github.com/nuxt/nuxt.git	node	nuxt	v4.4.8	cloned
+https://github.com/microsoft/TypeScript.git	node	typescript	v6.0.3	cloned
+https://github.com/denoland/deno.git	node	deno	v2.9.0	cloned
+https://github.com/evanw/esbuild.git	node	esbuild	v0.28.1	cloned
+https://github.com/rollup/rollup.git	node	rollup	v4.62.2	cloned
+https://github.com/parcel-bundler/parcel.git	node	parcel	v2.16.4	cloned
+https://github.com/babel/babel.git	node	babel	v8.0.3	cloned
+https://github.com/graphql/graphql-js.git	node	graphql-js	v17.0.1	cloned
+https://github.com/apollographql/apollo-server.git	node	apollo-server	@apollo/server@5.5.1	cloned
+https://github.com/trpc/trpc.git	node	trpc	v11.18.0	cloned
+https://github.com/colinhacks/zod.git	node	zod	v4.4.3	cloned
+https://github.com/fastify/fastify.git	node	fastify	v5.9.0	cloned
+https://github.com/koajs/koa.git	node	koa	v3.2.1	cloned
+https://github.com/hapijs/hapi.git	node	hapi	v21.3.0	cloned
+https://github.com/remix-run/remix.git	node	remix	remix@3.0.0-beta.4	cloned
+https://github.com/gatsbyjs/gatsby.git	node	gatsby	gatsby@5.16.1	cloned
+https://github.com/sveltejs/svelte.git	node	svelte	svelte@5.56.4	cloned
+https://github.com/reduxjs/redux.git	node	redux	v5.0.1	cloned
+https://github.com/date-fns/date-fns.git	node	date-fns	v4.4.0	cloned
+https://github.com/TypeStrong/ts-node.git	node	ts-node	v10.9.2	cloned
+https://github.com/pmndrs/zustand.git	node	zustand	v5.0.14	cloned
+https://github.com/TanStack/query.git	node	tanstack-query	release-2026-06-27-2033	cloned
+https://github.com/payloadcms/payload.git	node	payload	v3.85.1	cloned
+https://github.com/strapi/strapi.git	node	strapi	v5.49.0	cloned
+https://github.com/sequelize/sequelize.git	node	sequelize	v6.37.8	cloned
+https://github.com/prisma/prisma.git	node	prisma	7.8.0	cloned
+https://github.com/typeorm/typeorm.git	node	typeorm	1.0.0	cloned
+https://github.com/mikro-orm/mikro-orm.git	node	mikro-orm	v7.1.5	cloned
+https://github.com/keystonejs/keystone.git	node	keystone	2026-03-19	cloned
+https://github.com/directus/directus.git	node	directus	v12.0.2	cloned
+https://github.com/hasura/graphql-engine.git	node	hasura	v2.49.3	cloned
+https://github.com/withastro/astro.git	node	astro	@astrojs/upgrade@0.7.3	cloned
+https://github.com/solidjs/solid.git	node	solid	v1.9.0	cloned
+https://github.com/preactjs/preact.git	node	preact	10.29.3	cloned
+https://github.com/alpinejs/alpine.git	node	alpine	v3.15.12	cloned
+https://github.com/pmndrs/jotai.git	node	jotai	v2.20.1	cloned
+https://github.com/mobxjs/mobx.git	node	mobx	mobx@6.16.1	cloned
+https://github.com/immerjs/immer.git	node	immer	v11.1.8	cloned
+https://github.com/ava-labs/avalanchejs.git	node	avalanchejs	v5.1.0	cloned
+https://github.com/vercel/turbo.git	node	turbo	v2.10.1	cloned
 https://github.com/pnpm/pnpm.git	node	pnpm	v11.9.0	cloned
 https://github.com/tj/commander.js.git	node	commander	v15.0.0	cloned
 https://github.com/yargs/yargs.git	node	yargs	v18.0.0	cloned
