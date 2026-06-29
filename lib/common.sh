@@ -304,7 +304,11 @@ common_env_banner() {
   echo "▶ depth:         ${DEPTH} (0=full history)"
   echo "▶ release-only:  ${RELEASE_ONLY}"
   echo "▶ update:        ${UPDATE}"
-  echo "▶ github-token:  ${GITHUB_TOKEN:+set (${#GITHUB_TOKEN} chars)}${GITHUB_TOKEN:-NOT SET — 60 req/hr}"
+  if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+  echo "▶ github-token:  set (${#GITHUB_TOKEN} chars, starts ${GITHUB_TOKEN:0:8}…)"
+else
+  echo "▶ github-token:  NOT SET — limited to 60 req/hr"
+fi
   echo "▶ search-rpm:    ${RL_SEARCH_RPM} (hard limit: 30)"
   echo "▶ rest-rph:      ${RL_REST_RPH}  (hard limit: 5000)"
   echo

@@ -1,0 +1,10 @@
+# API response cache (raw JSON, large, regeneratable)
+.discover-cache/
+.oss-cache/
+
+# cloned corpus
+oss-corpus/
+
+# OS
+.DS_Store
+
