@@ -187,26 +187,47 @@ latest_tag() {
   owner_repo=$(echo "$url" \
     | sed -E 's|.*github\.com[:/]||; s|\.git$||')
 
-  # GitHub releases API — fastest, most reliable for repos that publish releases
-  local tag
-  tag=$(gh_api "https://api.github.com/repos/${owner_repo}/releases/latest" rest \
-    | grep -o '"tag_name":"[^"]*"' \
-    | head -1 \
-    | sed 's/"tag_name":"//; s/"//' \
-    || true)
+  # 1. GitHub releases/latest API — what maintainers mark as latest
+  local rel_json tag=""
+  rel_json=$(gh_api "https://api.github.com/repos/${owner_repo}/releases/latest" rest 2>/dev/null || echo '{}')
+  tag=$(echo "$rel_json" | python3 -c "
+import sys,json
+try:
+    t=(json.load(sys.stdin).get('tag_name') or '').strip()
+    if t and t!='null': print(t)
+except: pass
+" 2>/dev/null || true)
+  tag=$(printf '%s' "${tag:-}" | tr -d '\r\n\t')
+  if [[ -n "$tag" && "$tag" != "null" ]]; then echo "$tag"; return 0; fi
 
-  if [[ -n "$tag" && "$tag" != "null" ]]; then
-    echo "$tag"; return 0
-  fi
+  # 2. GitHub tags API — semver sorted via python (handles 3.9.0 > 0.8.2.0)
+  tag=$(
+    for page in 1 2 3; do
+      gh_api "https://api.github.com/repos/${owner_repo}/tags?per_page=100&page=${page}" rest 2>/dev/null || true
+    done | python3 -c "
+import sys,json,re
+PRE=re.compile(r'(rc|alpha|beta|preview|snapshot|\.m[0-9]+|[._-]dev|nightly)',re.I)
+VER=re.compile(r'[0-9]+\.[0-9]+')
+def key(t): return [int(x) for x in re.findall(r'[0-9]+',t)] or [0]
+tags=[]
+for line in sys.stdin:
+    line=line.strip()
+    if not line or line in('[',']',''): continue
+    try:
+        obj=json.loads(line.rstrip(','))
+        n=obj.get('name','') if isinstance(obj,dict) else ''
+    except: continue
+    if VER.search(n) and not PRE.search(n): tags.append(n)
+if tags: print(sorted(tags,key=key)[-1])
+" 2>/dev/null || true)
+  tag=$(printf '%s' "${tag:-}" | tr -d '\r\n\t')
+  if [[ -n "$tag" ]]; then echo "$tag"; return 0; fi
 
-  # Fallback: ls-remote sorted semver, strip pre-release suffixes
-  GIT_TERMINAL_PROMPT=0 \
-    git ls-remote --tags --refs --sort=-v:refname \
-    "$(inject_token "$url")" 2>/dev/null \
-    | awk -F'refs/tags/' '/refs\/tags\// {print $2}' \
-    | grep -viE '(rc|beta|alpha|preview|snapshot|\.m[0-9]+|[-.]dev)([._-]|$)' \
-    | head -1 \
-    || true
+  # 3. git ls-remote — sort -V (version sort), tail -1 = highest version
+  # Never use --sort=-v:refname: it sorts ref paths lexicographically,
+  # making 0.8.2 beat 3.9.0 in repos without v-prefixed tags.
+  tag=$(GIT_TERMINAL_PROMPT=0     git ls-remote --tags --refs     "$(inject_token "$url")" 2>/dev/null     | awk -F'refs/tags/' '/refs\/tags\// {print $2}'     | tr -d '\r'     | grep -E '[0-9]+\.[0-9]+'     | grep -viE '(rc|alpha|beta|preview|snapshot|\.m[0-9]+|[._-]dev|nightly)([._-]|$)'     | sort -V | tail -1 || true)
+  printf '%s\n' "$(printf '%s' "${tag:-}" | tr -d '\r\n\t ')"
 }
 
 # ── clone / update one repo ───────────────────────────────────────────────────
@@ -229,27 +250,18 @@ clone_one() {
   fi
 
   # ── already exists? ──────────────────────────────────────────────────────
+  # Always check if the tag on disk matches the latest resolved tag.
+  # Re-clone automatically if stale — no manual UPDATE flag needed.
   if [[ -d "$dest/.git" ]]; then
     if [[ -n "$tag" ]]; then
       local current=""
       current=$(git -C "$dest" describe --tags --exact-match 2>/dev/null || true)
-      if [[ -z "$current" ]]; then
-        local cur_commit tag_commit
-        cur_commit=$(git -C "$dest" rev-parse HEAD 2>/dev/null || true)
-        tag_commit=$(GIT_TERMINAL_PROMPT=0 \
-          git ls-remote --tags "$(inject_token "$url")" "${tag}^{}" 2>/dev/null \
-          | awk '{print $1}' || true)
-        [[ -n "$cur_commit" && "$cur_commit" == "$tag_commit" ]] && current="$tag"
-      fi
       if [[ "$current" == "$tag" ]]; then
         echo "✓  skip $cat/$name @ $tag (up-to-date)" >&2; return 0
       fi
-      echo "↻  re-clone $cat/$name ($current → $tag)" >&2
+      # Tag mismatch — always re-clone at latest
+      echo "↻  re-clone $cat/$name (${current:-unknown} → $tag)" >&2
       rm -rf "$dest"
-    elif [[ "${UPDATE:-0}" == "1" ]]; then
-      echo "↻  pull $cat/$name (no tag, UPDATE=1)" >&2
-      git -C "$dest" pull --ff-only --quiet 2>/dev/null || true
-      return 0
     else
       echo "✓  skip $cat/$name (exists, no tag)" >&2; return 0
     fi

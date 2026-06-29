@@ -34,11 +34,12 @@
 #
 # Options:
 #   --manifest FILE   TSV manifest path           (default: manifest.tsv)
-#   --root DIR        Clone destination root       (default: ~/oss-corpus)
+#   --root DIR        Clone destination root       (default: ~/oss/corpus)
 #   --depth N         Shallow clone depth, 0=full  (default: 1)
 #   --jobs N          Parallel clone workers        (default: 4)
 #   --release-only    Skip repos with no release tag (default: on)
 #   --no-release-only Clone default branch if no tag
+#   --re-resolve      Re-resolve all tags (pick up newer releases)
 #   --update          Re-clone repos at newer tags
 #   --category CAT    Filter to one category (e.g. java-large, python-sast)
 #   --limit N         Max repos to clone this run, 0=all (default: 0)
@@ -73,6 +74,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
+
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ── source shared library ────────────────────────────────────────────────────
@@ -85,7 +87,7 @@ source "${SCRIPT_DIR}/node.sh"
 
 # ── defaults ─────────────────────────────────────────────────────────────────
 MANIFEST="${MANIFEST:-manifest.tsv}"
-ROOT="${OSS_CORPUS_ROOT:-$HOME/oss-corpus}"
+ROOT="${OSS_CORPUS_ROOT:-$HOME/oss/corpus}"
 DEPTH="${OSS_CLONE_DEPTH:-1}"
 JOBS=4
 RELEASE_ONLY=1
@@ -119,6 +121,7 @@ while [[ $# -gt 0 ]]; do
     --release-only)  RELEASE_ONLY=1;  shift ;;
     --no-release-only) RELEASE_ONLY=0; shift ;;
     --limit)         LIMIT="$2";      shift 2 ;;
+    --re-resolve)    RE_RESOLVE=1;    shift ;;
     --update)        UPDATE=1;        shift ;;
     -h|--help)       usage ;;
     *) echo "ERROR: unknown option: $1" >&2; usage ;;
@@ -205,13 +208,14 @@ cmd_list() {
   echo
 
   # Load already-resolved URLs from existing manifest into a set
-  declare -A RESOLVED=()
+  local RESOLVED_FILE
+  RESOLVED_FILE=$(mktemp)
   if [[ -f "$MANIFEST" ]]; then
     while IFS=$'\t' read -r url _rest; do
       [[ "$url" == "#"* || -z "$url" ]] && continue
-      RESOLVED["$url"]=1
+      echo "$url" >> "$RESOLVED_FILE"
     done < "$MANIFEST"
-    echo "▶ manifest exists: ${#RESOLVED[@]} rows already resolved" >&2
+    local _rc; _rc=$(wc -l < "$RESOLVED_FILE" | tr -d ' '); echo "▶ manifest exists: $_rc rows already resolved" >&2
   else
     # Write header
     printf '# master.sh manifest — %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$MANIFEST"
@@ -225,11 +229,11 @@ cmd_list() {
     IFS=$'\t' read -r url cat name <<< "$entry"
     i=$(( i + 1 ))
 
-    # Already in manifest — skip
-    if [[ -n "${RESOLVED[$url]+_}" ]]; then
+    # Already in manifest — skip unless --re-resolve
+    if grep -qxF "$url" "$RESOLVED_FILE" 2>/dev/null; then
       skipped=$(( skipped + 1 ))
-      echo "  ✓ [$i/$TOTAL_REPOS] skip (already resolved): $name" >&2
-      continue
+      [[ "${RE_RESOLVE:-0}" != "1" ]] && continue
+      echo "  ↻ [$i/$TOTAL_REPOS] re-resolving tag: $name" >&2
     fi
 
     echo "  ↻ [$i/$TOTAL_REPOS] resolving $name …" >&2
@@ -251,7 +255,7 @@ cmd_list() {
     fi
 
     resolved=$(( resolved + 1 ))
-    RESOLVED["$url"]=1
+    echo "$url" >> "$RESOLVED_FILE"
   done
 
   echo
@@ -321,12 +325,12 @@ cmd_clone() {
   local cloned=0 failed_count=0 skipped_count=0
   declare -a FAILED_REPOS=()
 
-  # Build a work queue from manifest: only pending rows matching our active URL set
-  # Build URL lookup set from ACTIVE_REPOS
-  declare -A ACTIVE_URL_SET=()
-  for entry in "${ACTIVE_REPOS[@]}"; do
-    IFS=$'\t' read -r url _rest <<< "$entry"
-    ACTIVE_URL_SET["$url"]=1
+  # Build work queue directly from manifest.
+  # The manifest is the source of truth — no cross-reference with static catalogs.
+  # Ecosystem flags (--java/--python/--node) filter by category prefix instead.
+  local -a ECO_PREFIXES=()
+  for eco in "${ECOSYSTEMS[@]}"; do
+    ECO_PREFIXES+=("$eco")   # flat categories: java, python, node
   done
 
   # Temp file for parallel job args: one line per job
@@ -338,9 +342,17 @@ cmd_clone() {
     lineno=$(( lineno + 1 ))
     [[ "$url" == "#"* || -z "$url" ]] && continue
     [[ "$status" != "pending" ]] && [[ "$UPDATE" != "1" || "$status" != "cloned" ]] && continue
-    [[ -z "${ACTIVE_URL_SET[$url]+_}" ]] && continue
     [[ "$CATEGORY" != "all" && "$cat" != "$CATEGORY" ]] && continue
     [[ "$RELEASE_ONLY" -eq 1 && -z "$tag" ]] && continue
+
+    # Filter by ecosystem via category prefix
+    if [[ ${#ECO_PREFIXES[@]} -gt 0 ]]; then
+      local matched=0
+      for pfx in "${ECO_PREFIXES[@]}"; do
+        [[ "$cat" == ${pfx}* ]] && { matched=1; break; }
+      done
+      [[ "$matched" -eq 0 ]] && continue
+    fi
 
     printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
       "$url" "$cat" "$name" "${tag:-}" "$MANIFEST" "$lineno" >> "$jobfile"
