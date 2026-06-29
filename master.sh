@@ -41,6 +41,7 @@
 #   --no-release-only Clone default branch if no tag
 #   --update          Re-clone repos at newer tags
 #   --category CAT    Filter to one category (e.g. java-large, python-sast)
+#   --limit N         Max repos to clone this run, 0=all (default: 0)
 #   -h|--help         This help
 #
 # Env vars:
@@ -90,6 +91,7 @@ JOBS=4
 RELEASE_ONLY=1
 UPDATE=0
 CATEGORY="all"
+LIMIT=0   # 0 = no limit
 declare -a ECOSYSTEMS=()
 COMMAND=""
 
@@ -116,6 +118,7 @@ while [[ $# -gt 0 ]]; do
     --category)      CATEGORY="$2";   shift 2 ;;
     --release-only)  RELEASE_ONLY=1;  shift ;;
     --no-release-only) RELEASE_ONLY=0; shift ;;
+    --limit)         LIMIT="$2";      shift 2 ;;
     --update)        UPDATE=1;        shift ;;
     -h|--help)       usage ;;
     *) echo "ERROR: unknown option: $1" >&2; usage ;;
@@ -305,12 +308,13 @@ cmd_clone() {
   echo "▶ depth:         $DEPTH"
   echo "▶ jobs:          $JOBS"
   echo "▶ category:      $CATEGORY"
+  echo "▶ limit:         ${LIMIT} (0=all)"
   echo "▶ update:        $UPDATE"
   echo
 
   # Count what we'll process
   local total_pending
-  total_pending=$(grep -cP '\tpending$' "$MANIFEST" 2>/dev/null || echo 0)
+  total_pending=$(grep -E $'\tpending$' "$MANIFEST" 2>/dev/null | wc -l | tr -d ' ' || echo 0)
   echo "▶ pending rows:  $total_pending"
   echo
 
@@ -342,6 +346,14 @@ cmd_clone() {
       "$url" "$cat" "$name" "${tag:-}" "$MANIFEST" "$lineno" >> "$jobfile"
   done < "$MANIFEST"
 
+  # Apply --limit: truncate jobfile to first N entries
+  if (( LIMIT > 0 )); then
+    local tmpjob
+    tmpjob=$(mktemp)
+    head -"$LIMIT" "$jobfile" > "$tmpjob" && mv "$tmpjob" "$jobfile"
+    echo "▶ limit applied: capped at $LIMIT repos" >&2
+  fi
+
   local job_count
   job_count=$(wc -l < "$jobfile" | tr -d ' ')
   echo "▶ queued:        $job_count repos"
@@ -370,9 +382,9 @@ cmd_clone() {
   rm -f "$jobfile"
 
   # Re-count final manifest states
-  cloned=$(grep -cP '\tcloned$' "$MANIFEST" 2>/dev/null || echo 0)
-  failed_count=$(grep -cP '\tfailed$' "$MANIFEST" 2>/dev/null || echo 0)
-  skipped_count=$(grep -cP '\t(skipped|no-tag)$' "$MANIFEST" 2>/dev/null || echo 0)
+  cloned=$(grep -E $'\tcloned$' "$MANIFEST" 2>/dev/null | wc -l | tr -d ' ' || echo 0)
+  failed_count=$(grep -E $'\tfailed$' "$MANIFEST" 2>/dev/null | wc -l | tr -d ' ' || echo 0)
+  skipped_count=$(grep -E $'\t(skipped|no-tag)$' "$MANIFEST" 2>/dev/null | wc -l | tr -d ' ' || echo 0)
 
   echo
   echo "──────────────────────────────────────────────────"
