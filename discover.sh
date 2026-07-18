@@ -7,6 +7,11 @@
 #   ./discover.sh --node   --manifest manifest.tsv
 #   ./discover.sh --all    --manifest manifest.tsv
 #
+# Java sources (Sonatype browse API is dead / 404; do not rely on it):
+#   1. Maven Central via search.maven.org + POM → GitHub
+#   2. GitHub Search (language:Java) — works offline from Maven, needs token
+#   3. Curated seed list (last resort)
+#
 # For large Java corpora (thousands of repos), prefer the resume-safe scaler:
 #   ./scale-java.sh --target 10000
 #   ./scale-java.sh status
@@ -14,10 +19,13 @@
 # Env: GITHUB_TOKEN (required for GitHub API)
 set -euo pipefail
 
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MANIFEST="manifest.tsv"
 CACHE_DIR=".discover-cache"
 LIMIT=1000
 declare -a ECOSYSTEMS=()
+# Browser-like UA — some corporate/Mac networks filter bare curl
+CURL_UA="${CURL_UA:-Mozilla/5.0 (compatible; corpus-discover/1.0; +https://github.com/ictx-ai/corpus)}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -37,6 +45,19 @@ done
 
 mkdir -p "$CACHE_DIR"
 
+# curl wrapper: always send UA; never use -f so callers can inspect status
+http_get() {
+  local url="$1" out="$2"
+  local code
+  code=$(curl -sS -L --max-time 20 \
+    -A "$CURL_UA" \
+    -H "Accept: application/json, text/plain, */*" \
+    -o "$out" \
+    -w "%{http_code}" \
+    "$url" 2>/dev/null || echo "000")
+  printf '%s' "$code"
+}
+
 # Init manifest
 [[ ! -f "$MANIFEST" ]] && printf '# url\tcategory\tdir-name\ttag\tstatus\n' > "$MANIFEST"
 
@@ -50,55 +71,76 @@ echo "▶ existing: $(wc -l < "$SEEN" | tr -d ' ') repos" >&2
 # GitHub API call
 gh() {
   curl -fsSL --max-time 15 \
+    -A "$CURL_UA" \
     -H "Authorization: Bearer $GITHUB_TOKEN" \
     -H "Accept: application/vnd.github+json" \
+    -H "X-GitHub-Api-Version: 2022-11-28" \
     "$@"
 }
 
-# Resolve a GitHub slug → validate → write to manifest
+# Write a validated repo to the manifest.
+# Usage:
+#   emit <slug> <eco>                     # REST metadata + optional release tag
+#   emit <slug> <eco> <stars> <pushed> 1  # prevalidated (Search hit; no REST)
+# Returns 0 if a NEW row was written, 1 otherwise.
 emit() {
   local slug="$1" eco="$2"
-  [[ -z "$slug" ]] && return 0
-  # Dedup
-  grep -qxF "$slug" "$SEEN" && return 0
-  echo "$slug" >> "$SEEN"
+  local stars_in="${3:-}" pushed_in="${4:-}" prevalidated="${5:-0}"
+  [[ -z "$slug" ]] && return 1
+  grep -qxF "$slug" "$SEEN" && return 1
 
-  # Get repo metadata
-  local meta
-  meta=$(gh "https://api.github.com/repos/${slug}" 2>/dev/null) || return 0
+  local stars=0 pushed="" tag=""
 
-  # Quality checks
-  local archived fork stars pushed
-  archived=$(echo "$meta" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('archived',False))" 2>/dev/null || echo "True")
-  fork=$(echo "$meta"     | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('fork',False))"     2>/dev/null || echo "True")
-  stars=$(echo "$meta"    | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('stargazers_count',0))" 2>/dev/null || echo "0")
-  pushed=$(echo "$meta"   | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('pushed_at','')[:10])"  2>/dev/null || echo "")
+  if [[ "$prevalidated" == "1" ]]; then
+    stars=$((stars_in + 0))
+    pushed="${pushed_in:-}"
+    [[ $stars -lt 50 ]] && return 1
+    [[ -n "$pushed" && "$pushed" < "2022-01-01" ]] && return 1
+  else
+    local meta
+    meta=$(gh "https://api.github.com/repos/${slug}" 2>/dev/null) || {
+      # REST blocked/rate-limited — still accept known popular slugs without tag
+      echo "  ⚠ REST unavailable for $slug — writing pending without tag" >&2
+      stars=50
+      pushed="2024-01-01"
+      meta=""
+    }
+    if [[ -n "$meta" ]]; then
+      local archived fork
+      archived=$(echo "$meta" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('archived',False))" 2>/dev/null || echo "True")
+      fork=$(echo "$meta"     | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('fork',False))"     2>/dev/null || echo "True")
+      stars=$(echo "$meta"    | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('stargazers_count',0))" 2>/dev/null || echo "0")
+      pushed=$(echo "$meta"   | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('pushed_at','')[:10])"  2>/dev/null || echo "")
+      [[ "$archived" == "True" ]] && return 1
+      [[ "$fork"     == "True" ]] && return 1
+      [[ $((stars+0)) -lt 50   ]] && return 1
+      [[ -n "$pushed" && "$pushed" < "2022-01-01" ]] && return 1
 
-  [[ "$archived" == "True" ]] && return 0
-  [[ "$fork"     == "True" ]] && return 0
-  [[ $((stars+0)) -lt 50   ]] && return 0
-  [[ -n "$pushed" && "$pushed" < "2022-01-01" ]] && return 0
-
-  # Get latest tag
-  local tag=""
-  tag=$(gh "https://api.github.com/repos/${slug}/releases/latest" 2>/dev/null \
-    | python3 -c "
-import sys,json
+      tag=$(gh "https://api.github.com/repos/${slug}/releases/latest" 2>/dev/null \
+        | python3 -c "
+import sys,json,re
 try:
-    d=json.load(sys.stdin)
-    t=d.get('tag_name','')
-    import re
-    if t and re.search(r'[0-9]+\.[0-9]+',t): print(t)
+    t=(json.load(sys.stdin).get('tag_name') or '')
+    if t and re.search(r'[0-9]+\.[0-9]+', t): print(t)
 except: pass
 " 2>/dev/null || true)
+    fi
+  fi
 
-  local name
-  name=$(echo "$slug" | cut -d/ -f2 | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9._-]/-/g')
+  # Only mark seen after we commit to writing
+  echo "$slug" >> "$SEEN"
+
+  local owner repo name
+  owner=$(echo "$slug" | cut -d/ -f1 | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9._-]/-/g')
+  repo=$(echo "$slug"  | cut -d/ -f2 | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9._-]/-/g')
+  # owner-repo avoids dir collisions across ecosystems/orgs
+  name="${owner}-${repo}"
 
   printf '%s\t%s\t%s\t%s\t%s\n' \
     "https://github.com/${slug}.git" "$eco" "$name" "${tag:-}" "pending" >> "$MANIFEST"
 
   echo "  + $slug${tag:+ @ $tag}" >&2
+  return 0
 }
 
 # ── Python: top PyPI packages by download count ───────────────────────────────
@@ -160,281 +202,331 @@ for r in d.get('rows',[]):
   echo "▶ python: $count repos added" >&2
 }
 
-# ── Java: top Maven packages ──────────────────────────────────────────────────
-discover_java() {
-  echo "── Java: top Maven packages ──" >&2
+# ── Java discovery ────────────────────────────────────────────────────────────
+# Sonatype central.sonatype.com/api/v1/browse is gone (HTTP 404). Sources:
+#   A) search.maven.org (Solr) + repo1 POMs → GitHub URLs
+#   B) GitHub Search API (language:Java) — primary path when Maven is blocked
+#   C) curated seed list (last resort)
+#
+# For 10k-scale growth use: ./scale-java.sh --target 10000
 
-  local count=0
-  for page in $(seq 0 19); do  # 20 pages × 50 = 1000
-    [[ $count -ge $LIMIT ]] && break
-    local cache="$CACHE_DIR/sonatype-p${page}.json"
-
-    [[ ! -f "$cache" ]] && {
-      curl -fsSL --max-time 15 \
-        -H "Accept: application/json" \
-        "https://central.sonatype.com/api/v1/browse?size=50&page=${page}&sortField=normalizedPopularity&sortDirection=DESC" \
-        > "$cache" 2>/dev/null || echo '{"components":[]}' > "$cache"
-      sleep 0.3
-    }
-
-    local found
-    found=$(python3 -c "
-import json, sys
+# Extract GitHub owner/repo from a local POM file
+_pom_github_slug() {
+  python3 - "$1" <<'PYEOF'
+import sys, re
 try:
-    with open('$cache') as f: d=json.load(f)
-    print(len(d.get('components',[])))
-except: print(0)
-")
-    [[ $((found+0)) -eq 0 ]] && break
+    pom = open(sys.argv[1], encoding="utf-8", errors="replace").read()
+except Exception:
+    sys.exit(0)
+# scm / url / developerConnection / issues
+for pat in (
+    r'github\.com[:/]([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+?)(?:\.git|[/#\s"<]|$)',
+    r'scm:git:git@github\.com:([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+?)(?:\.git)?',
+):
+    m = re.search(pat, pom, re.I)
+    if m:
+        print(m.group(1).rstrip('/.'))
+        break
+PYEOF
+}
 
+# Fetch Maven artifact list for a groupId via search.maven.org; emit g\ta\tv lines
+_maven_group_artifacts() {
+  local group="$1" rows="${2:-100}"
+  local cache safe q enc code
+  safe=$(echo "$group" | tr './:' '___')
+  cache="$CACHE_DIR/maven-solr-${safe}-r${rows}.json"
+
+  # Refresh empty / HTML / non-JSON caches (stale failures from blocked runs)
+  if [[ -f "$cache" ]]; then
+    if ! python3 -c "import json; json.load(open('$cache'))" 2>/dev/null; then
+      rm -f "$cache"
+    elif python3 -c "
+import json
+d=json.load(open('$cache'))
+raise SystemExit(0 if (d.get('response') or {}).get('docs') is not None else 1)
+" 2>/dev/null; then
+      :
+    else
+      rm -f "$cache"
+    fi
+  fi
+
+  if [[ ! -f "$cache" ]]; then
+    # q=g:"org.springframework"  — quote group for exact match
+    q="g:\"${group}\""
+    enc=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$q")
+    code=$(http_get "https://search.maven.org/solrsearch/select?q=${enc}&rows=${rows}&wt=json" "$cache")
+    if [[ "$code" != "200" ]]; then
+      echo "  ⚠ search.maven.org HTTP $code for g=$group" >&2
+      rm -f "$cache"
+      echo '{"response":{"docs":[]}}' > "$cache"
+    fi
+    sleep 0.25
+  fi
+
+  python3 -c "
+import json
+try:
+    d=json.load(open('$cache'))
+except Exception:
+    d={}
+for doc in (d.get('response') or {}).get('docs') or []:
+    g=doc.get('g') or ''
+    a=doc.get('a') or ''
+    v=doc.get('latestVersion') or ''
+    if g and a and v:
+        print(g + '\t' + a + '\t' + v)
+"
+}
+
+# Resolve one Maven GAV → GitHub and emit()
+_java_from_gav() {
+  local g="$1" a="$2" v="$3"
+  local g_path pom_cache code slug
+  g_path="${g//.//}"
+  # sanitize cache path
+  pom_cache="$CACHE_DIR/pom-$(echo "${g}-${a}-${v}" | tr '/:' '__').xml"
+
+  if [[ -f "$pom_cache" ]] && [[ ! -s "$pom_cache" ]]; then
+    rm -f "$pom_cache"   # drop empty failures so we can retry
+  fi
+
+  if [[ ! -f "$pom_cache" ]]; then
+    code=$(http_get "https://repo1.maven.org/maven2/${g_path}/${a}/${v}/${a}-${v}.pom" "$pom_cache")
+    if [[ "$code" != "200" ]]; then
+      rm -f "$pom_cache"
+      : > "$pom_cache"
+    fi
+    sleep 0.05
+  fi
+
+  slug=$(_pom_github_slug "$pom_cache" || true)
+  [[ -z "$slug" ]] && return 1
+  emit "$slug" "java"
+}
+
+discover_java_maven() {
+  echo "  [maven] Maven Central via search.maven.org" >&2
+  local count=0
+  local group g a v
+
+  # Popular / high-signal groupIds (search.maven.org has no global popularity sort)
+  # NOTE: do not name this GROUPS — some environments reserve/export that name.
+  local -a MAVEN_GROUP_IDS=(
+    org.springframework org.springframework.boot org.springframework.security
+    org.springframework.cloud org.springframework.data
+    com.fasterxml.jackson.core com.fasterxml.jackson.datatype
+    org.apache.commons org.apache.httpcomponents org.apache.httpcomponents.client5
+    org.apache.logging.log4j org.apache.maven org.apache.tomcat
+    org.apache.kafka org.apache.flink org.apache.beam org.apache.avro
+    org.apache.lucene org.apache.poi org.apache.pdfbox org.apache.camel
+    org.hibernate.orm org.hibernate.validator org.mybatis
+    org.junit.jupiter org.mockito org.assertj org.testcontainers
+    io.netty io.projectreactor io.quarkus io.micronaut io.grpc
+    io.micrometer io.opentelemetry io.zipkin.reporter2
+    com.google.guava com.google.code.gson com.google.dagger com.google.errorprone
+    com.squareup.okhttp3 com.squareup.retrofit2
+    redis.clients org.redisson io.lettuce
+    org.mongodb org.postgresql com.mysql com.h2database
+    org.flywaydb org.liquibase com.zaxxer
+    org.keycloak org.jboss.resteasy org.eclipse.jetty
+    io.vertx org.glassfish.jersey.core
+    com.alibaba com.alibaba.cloud com.baomidou
+    org.elasticsearch.client org.neo4j.driver
+    software.amazon.awssdk com.amazonaws
+    io.kubernetes org.bouncycastle
+  )
+
+  for group in "${MAVEN_GROUP_IDS[@]}"; do
+    [[ $count -ge $LIMIT ]] && break
+    echo "    · group $group" >&2
     while IFS=$'\t' read -r g a v; do
       [[ $count -ge $LIMIT ]] && break
       [[ -z "$g" || -z "$a" || -z "$v" ]] && continue
+      if _java_from_gav "$g" "$a" "$v"; then
+        count=$(( count + 1 ))
+      fi
+    done < <(_maven_group_artifacts "$group" 80)
+  done
 
-      # Fetch POM → extract GitHub URL
-      local g_path="${g//./\/}"
-      local pom_cache="$CACHE_DIR/pom-${g}-${a}-${v}.xml"
-      [[ ! -f "$pom_cache" ]] && {
-        curl -fsSL --max-time 10 \
-          "https://repo1.maven.org/maven2/${g_path}/${a}/${v}/${a}-${v}.pom" \
-          > "$pom_cache" 2>/dev/null || echo "" > "$pom_cache"
-        sleep 0.1
-      }
+  echo "  maven path added=$count (toward limit $LIMIT)" >&2
+  printf '%s' "$count"
+}
 
-      local slug
-      slug=$(python3 - "$pom_cache" <<'PYEOF'
-import sys, re
+discover_java_github() {
+  # Top-star Java repos via Search API (no Maven dependency). Good when Maven is blocked.
+  echo "  [github] GitHub Search language:Java (stars≥50)" >&2
+  local count=0 page enc body nitems slug stars
+  local q="language:Java fork:false archived:false stars:>=50"
+  enc=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$q")
+
+  for page in $(seq 1 10); do  # max 1000 results per query
+    [[ $count -ge $LIMIT ]] && break
+    local cache="$CACHE_DIR/gh-java-search-p${page}.json"
+    local code
+
+    if [[ -f "$cache" ]] && ! python3 -c "import json; d=json.load(open('$cache')); assert 'items' in d" 2>/dev/null; then
+      rm -f "$cache"
+    fi
+
+    if [[ ! -f "$cache" ]]; then
+      code=$(curl -sS -L --max-time 30 \
+        -A "$CURL_UA" \
+        -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+        -H "Accept: application/vnd.github+json" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        -o "$cache" -w "%{http_code}" \
+        "https://api.github.com/search/repositories?q=${enc}&sort=stars&order=desc&per_page=100&page=${page}" \
+        2>/dev/null || echo "000")
+      if [[ "$code" == "403" || "$code" == "429" ]]; then
+        echo "  ⏳ GitHub Search HTTP $code — sleeping 60s" >&2
+        sleep 60
+        code=$(curl -sS -L --max-time 30 \
+          -A "$CURL_UA" \
+          -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+          -H "Accept: application/vnd.github+json" \
+          -o "$cache" -w "%{http_code}" \
+          "https://api.github.com/search/repositories?q=${enc}&sort=stars&order=desc&per_page=100&page=${page}" \
+          2>/dev/null || echo "000")
+      fi
+      if [[ "$code" != "200" ]]; then
+        echo "  ⚠ GitHub Search HTTP $code page=$page" >&2
+        rm -f "$cache"
+        break
+      fi
+      sleep 2   # stay under ~30 search/min
+    fi
+
+    nitems=$(python3 -c "
+import json
 try:
-    pom = open(sys.argv[1]).read()
-    m = re.search(r'github\.com[:/]([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+?)(?:\.git|[/#\s]|$)', pom)
-    if m: print(m.group(1).rstrip('/.'))
-except: pass
-PYEOF
-      ) || true
+    print(len(json.load(open('$cache')).get('items') or []))
+except Exception:
+    print(0)
+")
+    [[ "$((nitems + 0))" -eq 0 ]] && break
 
+    while IFS=$'\t' read -r slug stars pushed; do
+      [[ $count -ge $LIMIT ]] && break
       [[ -z "$slug" ]] && continue
-      emit "$slug" "java"
-      count=$((count + 1))
-
+      # prevalidated=1 → no REST (works when REST rate-limit is exhausted)
+      if emit "$slug" "java" "$stars" "$pushed" 1; then
+        count=$(( count + 1 ))
+      fi
     done < <(python3 -c "
 import json
-with open('$cache') as f: d=json.load(f)
-for c in d.get('components',[]):
-    print(c.get('namespace','') + '\t' + c.get('name','') + '\t' + c.get('version',''))
+try:
+    d=json.load(open('$cache'))
+except Exception:
+    raise SystemExit
+for it in d.get('items') or []:
+    if it.get('fork') or it.get('archived'):
+        continue
+    slug=it.get('full_name') or ''
+    stars=it.get('stargazers_count') or 0
+    pushed=(it.get('pushed_at') or '')[:10]
+    if slug:
+        print(f'{slug}\t{stars}\t{pushed}')
 ")
   done
 
-  # Fallback if Sonatype blocked: use hardcoded top groupIds
-  if [[ $count -eq 0 ]]; then
-    echo "  Sonatype blocked — using known top Java repos" >&2
-    while IFS=$'\t' read -r slug; do
-      [[ $count -ge $LIMIT ]] && break
-      emit "$slug" "java"
-      count=$((count + 1))
-    done <<'SLUGS'
+  echo "  github path added=$count" >&2
+  printf '%s' "$count"
+}
+
+discover_java_seed() {
+  echo "  [seed] curated seed list (last resort)" >&2
+  local count=0
+  while IFS= read -r slug; do
+    [[ $count -ge $LIMIT ]] && break
+    [[ -z "$slug" || "$slug" == "#"* ]] && continue
+    if emit "$slug" "java"; then
+      count=$(( count + 1 ))
+    fi
+  done <<'SLUGS'
 spring-projects/spring-boot
 spring-projects/spring-framework
 spring-projects/spring-security
-spring-projects/spring-data-commons
 spring-projects/spring-batch
-spring-projects/spring-integration
-spring-projects/spring-authorization-server
-spring-cloud/spring-cloud-gateway
-spring-cloud/spring-cloud-config
-spring-cloud/spring-cloud-openfeign
-spring-petclinic/spring-petclinic-microservices
 apache/kafka
 apache/flink
 apache/spark
-apache/hadoop
 apache/cassandra
-apache/hbase
-apache/hive
-apache/zookeeper
-apache/camel
-apache/dubbo
-apache/rocketmq
-apache/shardingsphere
-apache/skywalking
-apache/druid
-apache/pulsar
-apache/beam
-apache/solr
-apache/nifi
-apache/lucene
-apache/tika
-apache/poi
-apache/pdfbox
-apache/avro
-apache/parquet-mr
-apache/arrow
-apache/calcite
-apache/activemq
-apache/activemq-artemis
-apache/maven
-apache/tomcat
-apache/groovy
-apache/ignite
-apache/shiro
-apache/commons-lang
-apache/commons-io
-apache/commons-collections
-apache/commons-codec
-apache/commons-compress
-apache/httpcomponents-client
-apache/logging-log4j2
-apache/pinot
 elastic/elasticsearch
-opensearch-project/OpenSearch
 netty/netty
 google/guava
-google/guice
-google/gson
-google/auto
-google/error-prone
-google/truth
-google/tink
-google/dagger
 grpc/grpc-java
-protocolbuffers/protobuf
-eclipse-vertx/vert.x
-eclipse/jetty.project
-eclipse-ee4j/jersey
-eclipse/eclipse-collections
 FasterXML/jackson-core
-FasterXML/jackson-databind
-FasterXML/jackson-dataformats-binary
 hibernate/hibernate-orm
-hibernate/hibernate-validator
-mybatis/mybatis-3
-mybatis/spring-boot-starter
-baomidou/mybatis-plus
-jOOQ/jOOQ
-flyway/flyway
-liquibase/liquibase
-brettwooldridge/HikariCP
-pgjdbc/pgjdbc
-mysql/mysql-connector-j
-h2database/h2database
-mariadb/mariadb-connector-j
-mongodb/mongo-java-driver
-datastax/java-driver
-redis/jedis
-square/okhttp
-square/retrofit
-square/javapoet
-square/picasso
-square/leakcanary
-ReactiveX/RxJava
-ReactiveX/RxAndroid
-resilience4j/resilience4j
-ben-manes/caffeine
-lettuce-io/lettuce-core
-redisson/redisson
-Netflix/eureka
-Netflix/Hystrix
-Netflix/ribbon
-Netflix/zuul
-OpenFeign/feign
-quarkusio/quarkus
-micronaut-projects/micronaut-core
-helidon-io/helidon
-undertow-io/undertow
-open-telemetry/opentelemetry-java
-open-telemetry/opentelemetry-java-instrumentation
-micrometer-metrics/micrometer
-openzipkin/brave
-openzipkin/zipkin
-keycloak/keycloak
-apereo/cas
-pac4j/pac4j
-auth0/java-jwt
-jwtk/jjwt
-bcgit/bc-java
-connect2id/nimbus-jose-jwt
 junit-team/junit5
 mockito/mockito
-assertj/assertj-core
+quarkusio/quarkus
+micronaut-projects/micronaut-core
+keycloak/keycloak
+alibaba/nacos
+alibaba/Sentinel
+square/okhttp
+square/retrofit
+brettwooldridge/HikariCP
+redis/jedis
 testcontainers/testcontainers-java
-jacoco/jacoco
 checkstyle/checkstyle
 pmd/pmd
 spotbugs/spotbugs
-raphw/byte-buddy
-asm-lab/asm
-jboss-javassist/javassist
-rzwitserloot/lombok
-mapstruct/mapstruct
-immutables/immutables
-hcoles/pitest
-TNG/ArchUnit
-diffplug/spotless
+projectlombok/lombok
 gradle/gradle
 trinodb/trino
-prestodb/presto
-neo4j/neo4j
-hazelcast/hazelcast
-questdb/questdb
-orientechnologies/orientdb
-h2database/h2database
 dropwizard/dropwizard
-graphql-java/graphql-java
-swagger-api/swagger-core
-springdoc/springdoc-openapi
-springfox/springfox
-alibaba/nacos
-alibaba/spring-cloud-alibaba
-alibaba/Sentinel
-alibaba/fastjson
-apolloconfig/apollo
-seata/seata
-pagehelper/Mybatis-PageHelper
-dromara/Sa-Token
-halo-dev/halo
-macrozheng/mall
-jeecgboot/JeecgBoot
-pig-mesh/pig
-zaproxy/zaproxy
-WebGoat/WebGoat
-OWASP-Benchmark/BenchmarkJava
-JoyChou93/java-sec-code
-bumptech/glide
-airbnb/lottie-android
-facebook/fresco
-facebook/rocksdb
-LMAX-Exchange/disruptor
-jhy/jsoup
-thymeleaf/thymeleaf
-itext/itext7
-java-native-access/jna
-oracle/graal
-scala/scala
-JetBrains/kotlin
-akka/akka
-playframework/playframework
-ktorio/ktor
-vavr-io/vavr
-EsotericSoftware/kryo
-msgpack/msgpack-java
 qos-ch/slf4j
 qos-ch/logback
-aws/aws-sdk-java-v2
-fabric8io/kubernetes-client
-minio/minio-java
-alibaba/ARouter
-greenrobot/EventBus
-greenrobot/greenDAO
-JakeWharton/butterknife
-permissions-dispatcher/PermissionsDispatcher
-jankotek/mapdb
-srikanth-lingala/zip4j
-vsch/flexmark-java
-apache/freemarker
-apache/velocity-engine
+WebGoat/WebGoat
+zaproxy/zaproxy
 SLUGS
+  echo "  seed path added=$count" >&2
+  printf '%s' "$count"
+}
+
+discover_java() {
+  echo "── Java discovery (GitHub Search → Maven → seed) ──" >&2
+  echo "  note: Sonatype browse API is discontinued (404); not used." >&2
+
+  local total=0 n=0
+  local saved_limit=$LIMIT
+
+  # GitHub Search first: works without Maven, needs no REST budget for writes,
+  # and is what scale-java.sh uses for 10k-scale growth.
+  set +e
+  n=$(discover_java_github)
+  set -e
+  total=$(( total + ${n:-0} ))
+
+  if [[ $total -lt $saved_limit ]]; then
+    LIMIT=$(( saved_limit - total ))
+    (( LIMIT < 1 )) && LIMIT=1
+    set +e
+    n=$(discover_java_maven)
+    set -e
+    total=$(( total + ${n:-0} ))
+    LIMIT=$saved_limit
   fi
 
-  echo "▶ java: $count repos added" >&2
+  if [[ $total -eq 0 ]]; then
+    set +e
+    n=$(discover_java_seed)
+    set -e
+    total=$(( total + ${n:-0} ))
+  fi
+
+  if [[ $total -eq 0 ]]; then
+    echo "  ✗ no new java repos added." >&2
+    echo "  Tips: check GITHUB_TOKEN; api.github.com Search must be reachable." >&2
+    echo "  For large corpora: ./scale-java.sh --target 10000" >&2
+  elif [[ -x "${SCRIPT_DIR}/scale-java.sh" ]]; then
+    echo "  tip: for 10k-scale growth run ./scale-java.sh --target 10000" >&2
+  fi
+
+  echo "▶ java: $total repos added this run" >&2
 }
 
 # ── Node: top npm packages ────────────────────────────────────────────────────
