@@ -7,6 +7,10 @@
 #   ./discover.sh --node   --manifest manifest.tsv
 #   ./discover.sh --all    --manifest manifest.tsv
 #
+# For large Java corpora (thousands of repos), prefer the resume-safe scaler:
+#   ./scale-java.sh --target 10000
+#   ./scale-java.sh status
+#
 # Env: GITHUB_TOKEN (required for GitHub API)
 set -euo pipefail
 

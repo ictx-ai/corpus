@@ -308,6 +308,22 @@ clone_one() {
   return 1
 }
 
+# ── TSV helpers ───────────────────────────────────────────────────────────────
+# Bash `read` with IFS=$'\t' treats tab as IFS *whitespace* and therefore
+# collapses consecutive tabs — empty columns (e.g. missing release tag) disappear
+# and later fields shift left.  Map tabs to a non-whitespace separator first.
+#
+# read_manifest_row <line>
+#   Sets: M_URL M_CAT M_NAME M_TAG M_STATUS
+read_manifest_row() {
+  local line="$1"
+  local sep=$'\x1f'
+  local mapped="${line//$'\t'/$sep}"
+  # Clear so missing trailing fields don't leak from a previous call
+  M_URL="" M_CAT="" M_NAME="" M_TAG="" M_STATUS=""
+  IFS="$sep" read -r M_URL M_CAT M_NAME M_TAG M_STATUS _ <<< "${mapped}" || true
+}
+
 # ── environment summary ───────────────────────────────────────────────────────
 common_env_banner() {
   local script="${1:-}"

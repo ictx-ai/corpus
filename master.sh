@@ -338,9 +338,14 @@ cmd_clone() {
   jobfile=$(mktemp)
 
   local lineno=0
-  while IFS=$'\t' read -r url cat name tag status; do
+  # Read whole lines then split with read_manifest_row — empty tags must not
+  # shift the status column (bash IFS=$'\t' collapses consecutive tabs).
+  while IFS= read -r line || [[ -n "${line:-}" ]]; do
     lineno=$(( lineno + 1 ))
-    [[ "$url" == "#"* || -z "$url" ]] && continue
+    [[ "$line" == "#"* || -z "$line" ]] && continue
+    read_manifest_row "$line"
+    local url="$M_URL" cat="$M_CAT" name="$M_NAME" tag="$M_TAG" status="$M_STATUS"
+    [[ -z "$url" ]] && continue
     [[ "$status" != "pending" ]] && [[ "$UPDATE" != "1" || "$status" != "cloned" ]] && continue
     [[ "$CATEGORY" != "all" && "$cat" != "$CATEGORY" ]] && continue
     [[ "$RELEASE_ONLY" -eq 1 && -z "$tag" ]] && continue
@@ -380,7 +385,12 @@ cmd_clone() {
   # Parallel clone semaphore: up to $JOBS concurrent git-clone processes.
   # Each worker updates the manifest status column when it finishes.
   local running=0
-  while IFS=$'\t' read -r url cat name tag manifest lineno; do
+  local jline sep=$'\x1f' mapped
+  while IFS= read -r jline || [[ -n "${jline:-}" ]]; do
+    [[ -z "$jline" ]] && continue
+    # Preserve empty tag column in jobfile rows
+    mapped="${jline//$'\t'/$sep}"
+    IFS="$sep" read -r url cat name tag manifest lineno _ <<< "$mapped" || true
     _clone_worker "$url" "$cat" "$name" "${tag:-}" "$manifest" "$lineno" &
     running=$(( running + 1 ))
     if (( running >= JOBS )); then
